@@ -15,6 +15,8 @@ HUGGING_FACE_API_URLS = {
     'dreamlike-anime': os.environ.get('HUGGING_FACE_API_URL4'),
 }
 
+base_64_url = None
+
 @app.route('/')
 def index():
     session.permanent = False
@@ -88,7 +90,13 @@ def generate_image_and_render(HUGGING_API, selected_model, prompt, negative_prom
 
     if not response or response == "timeout":
         return render_template("error.html", error="No image generated or timeout after retries")
+    
+    base_64_url = response
     return render_template("result.html", image=response, prompt=prompt)
+
+@app.route('/teemill', methods=['GET'])
+def teemill_render():
+    return render_template("teemill.html", image=base_64_url)
 
 
 @app.route('/gallery-image/<img_name>', methods=['GET'])
