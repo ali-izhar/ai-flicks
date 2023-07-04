@@ -18,10 +18,10 @@
                         <label for="color_picker" class="form-label text-secondary">Choose Color</label>
                         <input type="color" id="color_picker" value="#df1aae" class="form-control form-control-color">
                     </div>
-                    <div class="canvas-container position-relative d-flex justify-content-center align-items-center bg-white rounded p-3">
-                        <img id="result_image" src="{{ image }}" class="position-absolute img-fluid" style="max-width: 512px; max-height: 512px; z-index:1;">
-                        <canvas id="drawing_canvas" class="position-absolute" style="max-width: 512px; max-height: 512px; z-index:2;"></canvas>
-                        <div id="initial_message" class="position-absolute w-100 h-100 d-flex align-items-center justify-content-center" style="max-width: 512px; max-height: 512px; z-index:3;">
+                    <div class="canvas-container position-relative d-flex justify-content-center align-items-center bg-white rounded p-3" style="width: 100%; height: 800px;">
+                        <img id="result_image" src="{{ image }}" class="position-absolute img-fluid" style="width: auto; height: auto;">
+                        <canvas id="drawing_canvas" class="position-absolute" style="width: 100%; height: 100%;"></canvas>
+                        <div id="initial_message" class="position-absolute w-100 h-100 d-flex align-items-center justify-content-center" style="z-index:3;">
                             <p class="text-center text-dark"><b>Draw</b> &#x270E; </p>
                         </div>
                     </div>

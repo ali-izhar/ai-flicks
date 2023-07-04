@@ -1,18 +1,18 @@
-const img = new Image();
-img.src = document.getElementById('result_image').src;
-img.onload = function() {
-    const imgWidth = this.width;
-    const imgHeight = this.height;
-
-    canvas.width = imgWidth;
-    canvas.height = imgHeight;
-}
-
 // Define the button and canvas variables
 const button = document.getElementById('buy_button');
 const canvas = document.getElementById('drawing_canvas');
 const context = canvas.getContext('2d');
-const imageElement = document.getElementById('result_image');
+
+// set canvas size
+canvas.width = 512;
+canvas.height = 512;
+
+// Load image onto the canvas
+const img = new Image();
+img.onload = function() {
+  context.drawImage(img, 0, 0, canvas.width, canvas.height);
+}
+img.src = '{{ image }}'; // replace with the image data URL
 
 // Function to draw the initial image onto the canvas
 function drawInitialImage() {
@@ -83,10 +83,10 @@ function drawCircle(x, y, radius, color) {
   context.save();
   context.scale(canvasScale, canvasScale);
   context.arc(
-    x - canvasRect.x,
-    y - canvasRect.y,
-    radius, 0,
-    Math.PI * 2,
+      x - canvasRect.x,
+      y - canvasRect.y,
+      radius, 0,
+      Math.PI * 2,
   );
   context.fill();
   context.closePath();
