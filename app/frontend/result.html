@@ -3,132 +3,31 @@
 {% block title %}Result Image{% endblock %}
 
 {% block header %}
-<header class="bg-dark">
-    <div class="container py-5">
-        <div class="row py-5">
-            <div class="col-md-6 mb-4">
-                <div class="p-5 mx-lg-5" style="background: url(&quot;assets/img/blob.svg&quot;) center / contain no-repeat;">
-                    <p class="mb-4" style="font-size: 1.4rem;"><strong><span style="color: rgb(25, 245, 170);">Given Prompt:&nbsp;</span></strong><br>{{ prompt }}</p>
-                    <!-- <button id="regenerate-button" class="btn btn-primary shadow" type="button" style="margin: 10 10 10 0;filter: blur(0px);backdrop-filter: opacity(1);-webkit-backdrop-filter: opacity(1);--bs-body-font-size: 0.5rem;">Regenerate Image</button> -->
-                </div>
-            </div>
-            <div class="col-md-6 mb-4">
-                <div class="p-5 mx-lg-5" style="background: url(&quot;assets/img/blob.svg&quot;) center / contain no-repeat;">
-                    <div class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="4000" data-bs-pause="false" id="carousel-2">
-                        <div class="carousel-inner" style="border-radius: 15px;">
-                            <div class="carousel-item active generated-image"><img class="w-100 d-block" src="data:image/png;base64,{{image}}" alt="Slide Image"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</header>
 <section class="py-5">
     <div class="container text-center py-5">
-        <p class="mb-4" style="font-size: 1.4rem;">Visualize how your image adopts a new&nbsp;<strong><span style="color: rgb(25, 245, 170);">persona&nbsp;</span></strong>when emblazoned on a t-shirt or hoodie!</p>
+        <p class="mb-4" style="font-size: 1.4rem;"><strong><span style="color: rgb(25, 245, 170);">Given Prompt:&nbsp;</span></strong><br>{{ prompt }}</p>
     </div>
 </section>
-<header class="bg-dark">
+
+<header class="bg-dark py-5">
     <div class="container py-5">
-        <div class="row py-5">
-            <div class="col-md-6 mb-4">
-                <div class="p-5 mx-lg-5" style="background: url(&quot;assets/img/blob.svg&quot;) center / contain no-repeat;">
-                    <div class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="4000" data-bs-pause="false" id="carousel-3">
-                        <div class="carousel-inner" style="border-radius: 15px;">
-                            <div class="carousel-item active">
-                                <img class="w-100 d-block" src="{{ url_for('static', filename='img/tshirt-w.png') }}" alt="Slide Image">
-                                <img class="w-100 d-block tshirt-overlay" src="data:image/png;base64,{{image}}" alt="Slide Image">
-                            </div>
-                            <div class="carousel-item">
-                                <img class="w-100 d-block" src="{{ url_for('static', filename='img/tshirt-b.png') }}" alt="Slide Image">
-                                <img class="w-100 d-block tshirt-overlay" src="data:image/png;base64,{{image}}" alt="Slide Image">
-                            </div>
+        <div class="row justify-content-center py-5">
+            <div class="col-lg-8 mb-4 d-flex flex-column align-items-center">
+                <div class="bg-light rounded p-3 shadow" style="width: 100%;">
+                    <div class="mb-3">
+                        <label for="color_picker" class="form-label text-secondary">Choose Color</label>
+                        <input type="color" id="color_picker" value="#df1aae" class="form-control form-control-color">
+                    </div>
+                    <div class="canvas-container position-relative d-flex justify-content-center align-items-center bg-white rounded p-3">
+                        <img id="result_image" src="{{ image }}" class="position-absolute img-fluid" style="max-width: 512px; max-height: 512px; z-index:1;">
+                        <canvas id="drawing_canvas" class="position-absolute" style="max-width: 512px; max-height: 512px; z-index:2;"></canvas>
+                        <div id="initial_message" class="position-absolute w-100 h-100 d-flex align-items-center justify-content-center" style="max-width: 512px; max-height: 512px; z-index:3;">
+                            <p class="text-center text-dark"><b>Draw</b> &#x270E; </p>
                         </div>
-                        <div><a class="carousel-control-prev" href="#carousel-3" role="button" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span><span class="visually-hidden">Previous</span></a><a class="carousel-control-next" href="#carousel-3" role="button" data-bs-slide="next"><span class="carousel-control-next-icon"></span><span class="visually-hidden">Next</span></a></div>
-                        <ol class="carousel-indicators">
-                            <li data-bs-target="#carousel-3" data-bs-slide-to="0" class="active"></li>
-                            <li data-bs-target="#carousel-3" data-bs-slide-to="1"></li>
-                        </ol>
-                    </div><br>
-
-                    <form action="{{ url_for('addToCart') }}" method="post" enctype="multipart/form-data">
-                        <div class="options centered-content" style="padding-top: 20px;padding-bottom: 20px;">
-                            <input type="hidden" id="tshirtImageBase64" name="imageBase64" value="{{image}}">
-                            <input type="hidden" id="tshirtSelectedSize" name="tshirtSelectedSize">
-                            <input type="hidden" id="tshirtSelectedColor" name="tshirtSelectedColor">
-                            <input type="hidden" id="tshirtProduct" name="selectedProduct" value="tshirt">
-                            
-                            <div class="dropdown size-dropdown" style="margin: 10px;">
-                                <button class="btn btn-primary dropdown-toggle size-button" aria-expanded="false" data-bs-toggle="dropdown" type="button" style="background: var(--bs-gray-700);border-color: var(--bs-gray-700);" required>Select Size&nbsp;</button>
-                                <div class="dropdown-menu dropdown-menu-dark">
-                                    <a class="dropdown-item">Small</a>
-                                    <a class="dropdown-item">Medium</a>
-                                    <a class="dropdown-item">Large</a>
-                                </div>
-                            </div>
-                            
-                            <div class="dropdown color-dropdown" style="margin: 10px;">
-                                <button class="btn btn-primary dropdown-toggle color-button" aria-expanded="false" data-bs-toggle="dropdown" type="button" style="background: var(--bs-gray-700);border-color: var(--bs-gray-700);">Select Color</button>
-                                <div class="dropdown-menu dropdown-menu-dark">
-                                    <a class="dropdown-item">White</a>
-                                    <a class="dropdown-item">Black</a>
-                                </div>
-                            </div>
-                            
-                            <button class="btn btn-primary shadow" id="add-to-cart-btn-tshirt" type="submit" style="margin: 10px;filter: blur(0px);backdrop-filter: opacity(1);-webkit-backdrop-filter: opacity(1);--bs-body-font-size: 0.5rem;" disabled>Add To Cart</button>
-                        </div>
-                    </form>                                               
-                    
-                    
-                </div>
-            </div>
-            <div class="col-md-6 mb-4">
-                <div class="p-5 mx-lg-5" style="background: url(&quot;assets/img/blob.svg&quot;) center / contain no-repeat;">
-                    <div class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="4000" data-bs-pause="false" id="carousel-4">
-                        <div class="carousel-inner" style="border-radius: 15px;">
-                            <div class="carousel-item active">
-                                <img class="w-100 d-block" src="{{ url_for('static', filename='img/hoodie-b.png') }}" alt="Slide Image">
-                                <img class="w-100 d-block hoodie-overlay" src="data:image/png;base64,{{image}}" alt="Slide Image"></div>
-                            <div class="carousel-item">
-                                <img class="w-100 d-block" src="{{ url_for('static', filename='img/hoodie-w.png') }}" alt="Slide Image">
-                                <img class="w-100 d-block hoodie-overlay" src="data:image/png;base64,{{image}}" alt="Slide Image"></div>
-                        </div>
-                        <div><a class="carousel-control-prev" href="#carousel-4" role="button" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span><span class="visually-hidden">Previous</span></a><a class="carousel-control-next" href="#carousel-4" role="button" data-bs-slide="next"><span class="carousel-control-next-icon"></span><span class="visually-hidden">Next</span></a></div>
-                        <ol class="carousel-indicators">
-                            <li data-bs-target="#carousel-4" data-bs-slide-to="0" class="active"></li>
-                            <li data-bs-target="#carousel-4" data-bs-slide-to="1"></li>
-                        </ol>
-                    </div><br>
-
-                    <form action="{{ url_for('addToCart') }}" method="post" enctype="multipart/form-data">
-                        <div class="options centered-content" style="padding-top: 20px;padding-bottom: 20px;">
-                            <input type="hidden" id="hoodieImageBase64" name="imageBase64" value="{{image}}">
-                            <input type="hidden" id="hoodieSelectedSize" name="hoodieSelectedSize">
-                            <input type="hidden" id="hoodieSelectedColor" name="hoodieSelectedColor">
-                            <input type="hidden" id="hoodieProduct" name="selectedProduct" value="hoodie">
-                            
-                            <div class="dropdown size-dropdown" style="margin: 10px;">
-                                <button class="btn btn-primary dropdown-toggle size-button" aria-expanded="false" data-bs-toggle="dropdown" type="button" style="background: var(--bs-gray-700);border-color: var(--bs-gray-700);">Select Size&nbsp;</button>
-                                <div class="dropdown-menu dropdown-menu-dark">
-                                    <a class="dropdown-item">Small</a>
-                                    <a class="dropdown-item">Medium</a>
-                                    <a class="dropdown-item">Large</a>
-                                </div>
-                            </div>
-                            
-                            <div class="dropdown color-dropdown" style="margin: 10px;">
-                                <button class="btn btn-primary dropdown-toggle color-button" aria-expanded="false" data-bs-toggle="dropdown" type="button" style="background: var(--bs-gray-700);border-color: var(--bs-gray-700);">Select Color</button>
-                                <div class="dropdown-menu dropdown-menu-dark">
-                                    <a class="dropdown-item">White</a>
-                                    <a class="dropdown-item">Black</a>
-                                </div>
-                            </div>
-                            
-                            <button class="btn btn-primary shadow" id="add-to-cart-btn-hoodie" type="submit" style="margin: 10px;filter: blur(0px);backdrop-filter: opacity(1);-webkit-backdrop-filter: opacity(1);--bs-body-font-size: 0.5rem;" disabled>Add To Cart</button>
-                        </div>
-                    </form>                                                                                                         
-                    
+                    </div>
+                    <div class="d-flex justify-content-center mt-3">
+                        <a id="buy_button" class="btn btn-primary" href="#">Buy Now</a>
+                    </div>
                 </div>
             </div>
         </div>
