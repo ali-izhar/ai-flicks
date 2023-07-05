@@ -1,8 +1,8 @@
 import io
 import os
-import requests
 import base64
 import concurrent.futures
+from aiohttp import ClientSession, ClientTimeout
 from PIL import Image
 
 __all__ = ["Model"]
@@ -14,7 +14,6 @@ class ModelException(Exception):
     pass
 
 class Model:
-
     def __init__(self, selected_model, prompt, negative_prompt):
         self.selected_model = selected_model
         self.prompt = prompt
@@ -35,21 +34,18 @@ class Model:
                 "wait_for_model": True
             }
         }
-        self.session = requests.Session()
         self.retry_count = 0
 
-    def generate_image(self):
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            future = executor.submit(self._generate_image)
-            try:
-                base_64_image = future.result(timeout=TIMEOUT)
-                return base_64_image
-            except concurrent.futures.TimeoutError:
-                return "timeout"
-
-    def _generate_image(self):
+    async def generate_image(self):
         try:
-            response_content = self.fetch_response()
+            base_64_image = await self._generate_image()
+            return base_64_image
+        except concurrent.futures.TimeoutError:
+            return "timeout"
+
+    async def _generate_image(self):
+        try:
+            response_content = await self.fetch_response()
             if not response_content:
                 raise ModelException("No content in the response")
         
@@ -62,26 +58,27 @@ class Model:
             print(f"Failed to generate image: {e}")
             raise ModelException(f"Failed to generate image: {e}") from e
 
-    def fetch_response(self):
-        try:
-            response = self.session.post(
-                self.selected_model,
-                headers=headers,
-                json=self.params,
-                timeout=TIMEOUT
-            )
-        except requests.RequestException as e:
-            print(f"RequestException: {e}")
-            raise ModelException(f"RequestException: {e}") from e
+    async def fetch_response(self):
+        timeout = ClientTimeout(total=TIMEOUT)
+        async with ClientSession(timeout=timeout) as session:
+            try:
+                response = await session.post(
+                    self.selected_model,
+                    headers=headers,
+                    json=self.params,
+                )
+            except Exception as e:
+                print(f"RequestException: {e}")
+                raise ModelException(f"RequestException: {e}") from e
 
-        if response.status_code != 200:
-            print(f"Failed to generate image: {response.status_code}")
-            print(f"Response text: {response.text}")
-            if response.status_code == 400:
-                raise ModelException("Bad Request - there might be something wrong with your parameters.")
-            elif response.status_code == 401:
-                raise ModelException("Unauthorized - there might be something wrong with your authentication.")
-            else:
-                raise ModelException(f"Unexpected status code: {response.status_code}")
+            if response.status != 200:
+                print(f"Failed to generate image: {response.status}")
+                print(f"Response text: {response.text}")
+                if response.status == 400:
+                    raise ModelException("Bad Request - there might be something wrong with your parameters.")
+                elif response.status == 401:
+                    raise ModelException("Unauthorized - there might be something wrong with your authentication.")
+                else:
+                    raise ModelException(f"Unexpected status code: {response.status}")
 
-        return response.content
+            return await response.read()

@@ -1,11 +1,7 @@
 let isTyping = false;
 
 const formFields = {
-    model: 'model_input',
-    tsize: 'tshirtSelectedSize',
-    tcolor: 'tshirtSelectedColor',
-    hsize: 'hoodieSelectedSize',
-    hcolor: 'hoodieSelectedColor',
+    model: 'model_input'
 };
 
 const generateButton = document.getElementById('generate-button');
@@ -78,54 +74,5 @@ document.addEventListener('DOMContentLoaded', () => {
         item.addEventListener('click', (e) => {
             e.target.closest('.dropdown').querySelector('.dropdown-toggle').textContent = e.target.textContent;
         });
-    });
-});
-
-$(document).ready(() => {  
-
-    // Check if both color and size are selected for the product
-    var formSelectors = {
-        tshirt: {
-            size: '#tshirtSelectedSize',
-            color: '#tshirtSelectedColor',
-            button: '#add-to-cart-btn-tshirt'
-        },
-        hoodie: {
-            size: '#hoodieSelectedSize',
-            color: '#hoodieSelectedColor',
-            button: '#add-to-cart-btn-hoodie'
-        }
-    };
-
-    function checkIfBothSelected(product) {
-        var size = $(formSelectors[product].size).val();
-        var color = $(formSelectors[product].color).val();
-        if (size && color) {
-            $(formSelectors[product].button).prop('disabled', false);
-        } else {
-            $(formSelectors[product].button).prop('disabled', true);
-        }
-    }
-
-    $('.dropdown-item').on('click', function() {
-        const text = $(this).text();
-        const parentDropdown = $(this).closest('.dropdown');
-        let dropdownType = parentDropdown[0].classList[1];
-        let fieldName = dropdownType.split('-')[0];
-        const productType = parentDropdown.closest('form').find('input[name="selectedProduct"]').val();
-    
-        if (productType === 'tshirt') {
-            if (fieldName === 'size') fieldName = 'tsize';
-            else if (fieldName === 'color') fieldName = 'tcolor';
-        } else if (productType === 'hoodie') {
-            if (fieldName === 'size') fieldName = 'hsize';
-            else if (fieldName === 'color') fieldName = 'hcolor';
-        }
-    
-        $('#' + formFields[fieldName]).val(text);
-        parentDropdown.find('.dropdown-toggle').text(text);
-
-        // Check if both color and size are selected for the product
-        checkIfBothSelected(productType);
     });
 });
