@@ -1,37 +1,12 @@
-// Define the button and canvas variables
 const button = document.getElementById('buy_button');
-const canvas = document.getElementById('drawing_canvas');
-const context = canvas.getContext('2d');
 
-// set canvas size
-canvas.width = 512;
-canvas.height = 512;
-
-// Load image onto the canvas
-const img = new Image();
-img.onload = function() {
-  context.drawImage(img, 0, 0, canvas.width, canvas.height);
-}
-img.src = '{{ image }}'; // replace with the image data URL
-
-// Function to draw the initial image onto the canvas
-function drawInitialImage() {
-    let img = new Image();
-    img.src = imageElement.src;
-    img.onload = function() {
-        context.drawImage(img, 0, 0, canvas.width, canvas.height);
-    };
-}
-drawInitialImage();
-
-// Add a click handler to the button
 button.addEventListener('click', (e) => {
   e.preventDefault();
-  
-  // Export the base64 image from the canvas
-  const base64_image = canvas.toDataURL();
-  
+
+  // Get the image source
+  const base64_image = document.getElementsByClassName('generated-image')[0].children[0].src; 
   const apiKey = 'P3sbXrqgozFxB1SwZaFbCYwiKIL7Jy6g8rDcHRUj'; 
+  
   const options = {
     method: 'POST',
     headers: {
@@ -41,9 +16,9 @@ button.addEventListener('click', (e) => {
     body: JSON.stringify({
       image_url: base64_image,
       item_code: "RNA1",
-      name: "Hello World",
-      colours: "White,Black",
-      description: "Check out this awesome doodle tee, printed on an organic cotton t-shirt sustainably, using renewable energy. Created via the Teemill API and printed on demand.",
+      name: "Your AI Design",
+      colours: "White,Black,Red,Blue,Green,Yellow,Pink,Purple,Orange,Brown,Gray",
+      description: "Check out your AI generated design on a t-shirt! Scroll down to see more products and variations.",
       price: 20.00,
     }),
   };
@@ -59,100 +34,3 @@ button.addEventListener('click', (e) => {
     .catch(err => console.error(err));
   
 });
-
-let color = '#df1aae';
-const colorPicker = document.getElementById('color_picker');
-colorPicker.addEventListener('input', () => {
-  color = colorPicker.value;
-})
-
-canvas.width = 1000;
-canvas.height = 1300;
-
-var drawingMode = false;
-var lastEvent = null;
-var lastSize = 0;
-var maxSize = 15;
-var minSize = 2;
-
-function drawCircle(x, y, radius, color) {
-  context.fillStyle = color;
-  context.beginPath();
-  const canvasRect = canvas.getBoundingClientRect();
-  const canvasScale = canvas.width / canvasRect.width;
-  context.save();
-  context.scale(canvasScale, canvasScale);
-  context.arc(
-      x - canvasRect.x,
-      y - canvasRect.y,
-      radius, 0,
-      Math.PI * 2,
-  );
-  context.fill();
-  context.closePath();
-  context.restore();
-}
-
-function onMouseDown(e) {
-  if (e.touches) {
-      e = e.touches[0];
-  }
-
-  lastEvent = e;
-  drawingMode = true;
-  document.getElementById('initial_message').style.zIndex = "1"; // Modify z-index
-}
-
-function onMouseUp() {
-  drawingMode = false;
-}
-
-function onMouseMove(e) {
-  if (!drawingMode) {
-    return;
-  }
-  if (e.touches) {
-    e.preventDefault();
-    e = e.touches[0];
-  }
-  let size = 1;
-  
-  const deltaX = e.pageX - lastEvent.pageX;
-  const deltaY = e.pageY - lastEvent.pageY;
-  const distanceToLastMousePosition = Math.sqrt(
-    (deltaX ** 2) +
-    (deltaY ** 2)
-  );
-
-  size = Math.max(minSize, Math.min(maxSize, distanceToLastMousePosition / 3));
-  
-  if (drawingMode) {
-    drawCircle(e.pageX, e.pageY, size, color);
-  }
-  
-  if (lastSize) {
-    const deltaSize = size - lastSize;
-    
-    for (let i = 0; i < distanceToLastMousePosition; i += 1) {
-      const shift = (i / distanceToLastMousePosition);
-      drawCircle(
-        e.pageX - (deltaX * shift),
-        e.pageY - (deltaY * shift),
-        size - (deltaSize * shift),
-        color
-      );
-    }
-  }
-
-  lastEvent = e;
-  lastSize = size;
-}
-
-canvas.addEventListener('mousedown', onMouseDown);
-canvas.addEventListener('touchstart', onMouseDown);
-
-canvas.addEventListener('mousemove', onMouseMove);
-canvas.addEventListener('touchmove', onMouseMove);
-
-window.addEventListener('mouseup', onMouseUp);
-window.addEventListener('touchend', onMouseUp);
