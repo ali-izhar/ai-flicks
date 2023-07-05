@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Result Image{% endblock %}
+{% block title %}Design Image{% endblock %}
 
 {% block header %}
 <header class="bg-dark">
@@ -68,14 +68,36 @@
                             <li data-bs-target="#carousel-4" data-bs-slide-to="0" class="active"></li>
                             <li data-bs-target="#carousel-4" data-bs-slide-to="1"></li>
                         </ol>
-                    </div><br>                                                                                                                    
+                    </div>                                                                                                                  
                 </div>
             </div>
-            <div class="p-5 mx-lg-5" style="background: url(&quot;assets/img/blob.svg&quot;) center / contain no-repeat;">
-                <p class="mb-4" style="font-size: 1.4rem;"><strong><span style="color: rgb(25, 245, 170);">Checkout our Store:&nbsp;</span></strong><br>Fix this!</p>
-            </div>
-            <div class="d-flex justify-content-center mt-3">
-                <a id="buy_button" class="btn btn-primary" href="#">Buy Now</a>
+            <div class="col-md-12 mb-4">
+                <div class="p-5 mx-lg-5" style="background: url(&quot;assets/img/blob.svg&quot;) center / contain no-repeat;">
+                    <div class="d-flex justify-content-center mt-3">
+                        <a id="buy_button" class="btn btn-primary btn-lg" href="#">Buy Now</a>
+                    </div>
+                    <br>
+                    <h3 class="text-center mb-4" style="color: rgb(25, 245, 170);">When you click "Buy Now"...</h3>
+                    <p class="mb-4" style="font-size: 1.4rem;">
+                        You will be taken to our store where you can further customize this design!
+                        <ul>
+                            <li>Change the product type</li>
+                            <li>Select a different color</li>
+                            <li>Adjust the image to your liking</li>
+                        </ul>
+                        <br>
+                        Our range of products include:
+                        <ul>
+                            <li>T-shirts</li>
+                            <li>Hoodies</li>
+                            <li>Mugs</li>
+                            <li>Posters</li>
+                            <li>And more!</li>
+                        </ul>
+                        <br>
+                        Express your style and creativity with a personalized item!
+                    </p>
+                </div>
             </div>
         </div>
     </div>

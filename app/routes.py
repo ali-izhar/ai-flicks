@@ -39,7 +39,7 @@ def gallery():
 
 
 @app.route('/model', methods=['POST'])
-def model():
+async def model():
     data = request.form
     selected_model = data.get('model_input')
     prompt = data.get('prompt')
@@ -55,10 +55,10 @@ def model():
     if not negative_prompt or negative_prompt.isspace():
         negative_prompt = generate_negative_prompt(selected_model)
 
-    return generate_image_and_render(HUGGING_API, selected_model, prompt, negative_prompt)
+    return await generate_image_and_render(HUGGING_API, selected_model, prompt, negative_prompt)
 
 
-def generate_image_and_render(HUGGING_API, selected_model, prompt, negative_prompt, retry_count=0):
+async def generate_image_and_render(HUGGING_API, selected_model, prompt, negative_prompt, retry_count=0):
     model = Model(HUGGING_API, prompt=prompt, negative_prompt=negative_prompt)
 
     print("Prompt: ", prompt)
@@ -68,11 +68,11 @@ def generate_image_and_render(HUGGING_API, selected_model, prompt, negative_prom
 
     try:
         start = time.time()
-        response = model.generate_image()
+        response = await model.generate_image()
         print(f"Time taken: {time.time() - start} seconds")
         if response == "timeout" and retry_count < 5:  # Limit retries to avoid infinite recursion
             print('retrying...')
-            return generate_image_and_render(HUGGING_API, selected_model, prompt, negative_prompt, retry_count + 1)
+            return await generate_image_and_render(HUGGING_API, selected_model, prompt, negative_prompt, retry_count + 1)
     except Exception as e:
         return render_template("error.html", error=str(e))
 
