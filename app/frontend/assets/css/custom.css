@@ -117,7 +117,7 @@
   background: var(--bs-border-color-translucent);
 }
 
-/* .list-group-item {
+.list-group-item {
   transition: all 0.3s ease-in-out;
 }
 
@@ -141,7 +141,7 @@
   font-size: 1.1rem;
   color: gray;
   transition: all 0.3s ease-in-out;
-} */
+}
 
 .design-guide a {
   text-decoration: none;
