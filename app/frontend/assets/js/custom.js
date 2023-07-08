@@ -1,3 +1,12 @@
+window.addEventListener('pageshow', (event) => {
+    // If the page was loaded from the cache
+    if(event.persisted) {
+        // Hide the loader
+        document.getElementById('loader-overlay').style.display = 'none';
+    }
+});
+
+
 let isTyping = false;
 
 const formFields = {

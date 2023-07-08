@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">  
     <link rel="stylesheet" href="{{ url_for('static', filename='css/loader.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/animate.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/Lightbox-Gallery-baguetteBox.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/Projects-Grid-Horizontal-images.css') }}">
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.svg') }}">
@@ -30,6 +29,7 @@
         </div>
     </nav>
 
+    {% block loader %}{% endblock %}
     {% block header %}{% endblock %}
 
     <footer class="bg-dark">
@@ -40,9 +40,6 @@
             </div>
         </div>
     </footer>
-
-    {% block loader %}{% endblock %}
-
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="{{ url_for('static', filename='js/bold-and-dark.js')}}"></script>
