@@ -86,7 +86,7 @@ def google_login():
                 "client_secret": os.environ.get('GOOGLE_CLIENT_SECRET'),
                 "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                 "token_uri": "https://oauth2.googleapis.com/token",
-                "redirect_uris": [url_for('auth.google_auth', _external=True)]
+                "redirect_uris": [url_for('auth.google_auth', _external=True, _scheme='https')]
             }
         },
         scopes=['https://www.googleapis.com/auth/userinfo.profile',
@@ -113,7 +113,7 @@ def google_auth():
                 "client_secret": os.environ.get('GOOGLE_CLIENT_SECRET'),
                 "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                 "token_uri": "https://oauth2.googleapis.com/token",
-                "redirect_uris": [url_for('auth.google_auth', _external=True)]
+                "redirect_uris": [url_for('auth.google_auth', _external=True, _scheme='https')]
             }
         },
         scopes=['openid', 'https://www.googleapis.com/auth/userinfo.profile',

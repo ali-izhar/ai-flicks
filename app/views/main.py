@@ -28,3 +28,7 @@ def models():
 @main_bp.route('/guide')
 def guide():
     return render_template('guide.html', user=current_user)
+
+@main_bp.route('/status')
+def status():
+    return 'OK', 200

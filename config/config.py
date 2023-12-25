@@ -15,7 +15,5 @@ class Config:
 
     # MongoDB configuration
     MONGODB_SETTINGS = {
-        'db': 'aiflix',
-        'host': 'localhost',
-        'port': 27018
+        'host': os.getenv('MONGO_HOST'),
     }
