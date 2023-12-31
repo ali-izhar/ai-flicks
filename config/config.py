@@ -15,6 +15,6 @@ class Config:
 
     # MongoDB configuration
     MONGODB_SETTINGS = {
-        # 'host': os.getenv('AZURE_COSMOS_CONNECTIONSTRING'),
-        'host': 'localhost',
+        'host': os.getenv('AZURE_COSMOS_CONNECTIONSTRING'),
+        # 'host': 'localhost',
     }
