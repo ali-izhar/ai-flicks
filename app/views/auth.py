@@ -1,13 +1,10 @@
 import os
-import dotenv
 from flask import request, render_template, redirect, url_for, flash, session, Blueprint
 from flask_login import current_user, login_user, logout_user
 from google_auth_oauthlib.flow import Flow
 from app.services import get_user_by_email, create_user
 from app.utils import allowed_file
 from utils import resize_avatar, generate_random_password, get_google_profile_pic
-
-dotenv.load_dotenv()
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -82,8 +79,8 @@ def google_login():
     google_auth = Flow.from_client_config(
         client_config={
             "web": {
-                "client_id": os.environ.get('GOOGLE_CLIENT_KEY'),
-                "client_secret": os.environ.get('GOOGLE_CLIENT_SECRET'),
+                "client_id": os.getenv('GOOGLE_CLIENT_KEY'),
+                "client_secret": os.getenv('GOOGLE_CLIENT_SECRET'),
                 "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                 "token_uri": "https://oauth2.googleapis.com/token",
                 "redirect_uris": [url_for('auth.google_auth', _external=True, _scheme='https')]
@@ -109,8 +106,8 @@ def google_auth():
     google_auth = Flow.from_client_config(
         client_config={
             "web": {
-                "client_id": os.environ.get('GOOGLE_CLIENT_KEY'),
-                "client_secret": os.environ.get('GOOGLE_CLIENT_SECRET'),
+                "client_id": os.getenv('GOOGLE_CLIENT_KEY'),
+                "client_secret": os.getenv('GOOGLE_CLIENT_SECRET'),
                 "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                 "token_uri": "https://oauth2.googleapis.com/token",
                 "redirect_uris": [url_for('auth.google_auth', _external=True, _scheme='https')]
@@ -129,7 +126,7 @@ def google_auth():
     
     google_auth.fetch_token(
         authorization_response_url=request.url,
-        client_secret=os.environ.get('GOOGLE_CLIENT_SECRET'),
+        client_secret=os.getenv('GOOGLE_CLIENT_SECRET'),
         code=request.args.get('code')
     )
 

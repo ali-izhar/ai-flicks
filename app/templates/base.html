@@ -24,7 +24,6 @@
                 <ul class="navbar-nav">
                     <li class="nav-item"><a class="nav-link active" href="{{ url_for('main.models') }}">Models</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('gallery.gallery') }}">Gallery</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('studio.gradio') }}">Studio</a></li>
 
                     {% if current_user.is_authenticated %}
                         <li class="nav-item dropdown no-arrow">

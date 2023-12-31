@@ -5,6 +5,9 @@ from flask_mongoengine import MongoEngine
 from flask_admin import Admin, AdminIndexView, expose
 from flask_admin.contrib.mongoengine import ModelView
 from config.config import Config
+from dotenv import load_dotenv
+
+load_dotenv()
 
 db = MongoEngine()
 login_manager = LoginManager()
@@ -30,13 +33,12 @@ def create_app(config_class=Config):
     admin = Admin(app, name='Dashboard', template_mode='bootstrap3', index_view=MyAdminIndexView())
     admin.add_view(ModelView(models.User))
 
-    from .views import main_bp, admin_bp, auth_bp, user_bp, gallery_bp, studio_bp
+    from .views import main_bp, admin_bp, auth_bp, user_bp, gallery_bp
     app.register_blueprint(main_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(user_bp)
     app.register_blueprint(gallery_bp)
-    app.register_blueprint(studio_bp)
     
     @app.errorhandler(404)
     def page_not_found(e):

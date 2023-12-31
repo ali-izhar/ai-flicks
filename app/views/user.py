@@ -1,13 +1,10 @@
 import os
-import dotenv
 from flask import render_template, redirect, url_for, session, jsonify, Blueprint
 from flask_login import login_required, current_user
 from app.services import create_subscription
 from app.data import PLANS, PLAN_PRICES
-
 import stripe
 
-dotenv.load_dotenv()
 stripe.api_key = os.getenv('STRIPE_SECRET_KEY')
 
 user_bp = Blueprint('aiflix_user', __name__, url_prefix='/aiflix_user')

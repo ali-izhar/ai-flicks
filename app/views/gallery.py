@@ -2,7 +2,6 @@ import os
 import random
 import base64
 import asyncio
-import dotenv
 import traceback
 from flask import request, render_template, abort, jsonify, Blueprint
 from flask_login import current_user
@@ -10,21 +9,20 @@ from concurrent.futures import TimeoutError
 from app.api import Model, ModelError
 from app.data import PROMPTS
 
-dotenv.load_dotenv()
 
 gallery_bp = Blueprint('gallery', __name__, url_prefix='/gallery')
 
 HUGGING_FACE_API_URLS = {
-    'stable-diffusion-v15': os.environ.get('STABLE_DIFFUSION_V15'),
-    'stable-diffusion-v21': os.environ.get('STABLE_DIFFUSION_V21'),
-    'stable-diffusion-xl-base-0.9': os.environ.get('STABLE_DIFFUSION_XL_BASE_0.9'),
-    'stable-diffusion-xl-base-1.0': os.environ.get('STABLE_DIFFUSION_XL_BASE_1.0'),
-    'dreamlike-photo-real': os.environ.get('DREAMLIKE_PHOTO_REAL'),
-    'dream-shaper': os.environ.get('DREAM_SHAPER'),
-    'realistic-vision-v14': os.environ.get('REALISTIC_VISION_V14'),
-    'nitro-diffusion': os.environ.get('NITRO_DIFFUSION'),
-    'dreamlike-anime': os.environ.get('DREAMLIKE_ANIME_V10'),
-    'anything-v5': os.environ.get('ANYTHING_V5'),
+    'stable-diffusion-v15': os.getenv('STABLE_DIFFUSION_V15'),
+    'stable-diffusion-v21': os.getenv('STABLE_DIFFUSION_V21'),
+    'stable-diffusion-xl-base-0.9': os.getenv('STABLE_DIFFUSION_XL_BASE_0.9'),
+    'stable-diffusion-xl-base-1.0': os.getenv('STABLE_DIFFUSION_XL_BASE_1.0'),
+    'dreamlike-photo-real': os.getenv('DREAMLIKE_PHOTO_REAL'),
+    'dream-shaper': os.getenv('DREAM_SHAPER'),
+    'realistic-vision-v14': os.getenv('REALISTIC_VISION_V14'),
+    'nitro-diffusion': os.getenv('NITRO_DIFFUSION'),
+    'dreamlike-anime': os.getenv('DREAMLIKE_ANIME_V10'),
+    'anything-v5': os.getenv('ANYTHING_V5'),
 }
 
 @gallery_bp.route('/')
