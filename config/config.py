@@ -15,5 +15,5 @@ class Config:
 
     # MongoDB configuration
     MONGODB_SETTINGS = {
-        'host': os.getenv('MONGO_HOST'),
+        'host': os.getenv('AZURE_COSMOS_CONNECTIONSTRING'),
     }
