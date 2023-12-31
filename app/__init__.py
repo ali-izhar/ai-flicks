@@ -5,9 +5,15 @@ from flask_mongoengine import MongoEngine
 from flask_admin import Admin, AdminIndexView, expose
 from flask_admin.contrib.mongoengine import ModelView
 from config.config import Config
+
 from dotenv import load_dotenv
+import logging
 
 load_dotenv()
+
+# enable logging
+logging.disable(logging.NOTSET)
+
 
 db = MongoEngine()
 login_manager = LoginManager()

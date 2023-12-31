@@ -14,7 +14,13 @@ class Config:
     PERMANENT_SESSION_LIFETIME = timedelta(hours=time_to_live)
 
     # MongoDB configuration
-    MONGODB_SETTINGS = {
-        'host': os.getenv('AZURE_COSMOS_CONNECTIONSTRING'),
-        # 'host': 'localhost',
-    }
+    if os.getenv('FLASK_DEBUG') == 'production':
+        # Configuration for production (e.g., Azure)
+        MONGODB_SETTINGS = {
+            'host': os.getenv('AZURE_COSMOS_CONNECTIONSTRING'),
+        }
+    else:
+        # Configuration for development
+        MONGODB_SETTINGS = {
+            'host': 'localhost',
+        }

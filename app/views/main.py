@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, session
-from flask_login import login_required, current_user, login_user
+from flask_login import current_user, login_user
 from app.data import PLANS, MODELS
 from app.services import get_user_by_email
 from .auth import google_auth

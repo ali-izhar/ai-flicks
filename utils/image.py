@@ -1,4 +1,5 @@
 import io
+import logging
 from PIL import Image
 
 __all__ = ["resize_avatar"]
@@ -13,5 +14,5 @@ def resize_avatar(image):
         img_bytes = buffer.getvalue()
         return img_bytes
     except Exception as e:
-        print("Error resizing image: ", e)
+        logging.ERROR("Error resizing image: ", e)
         return None

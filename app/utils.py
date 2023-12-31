@@ -1,5 +1,6 @@
 import atexit
 from datetime import datetime, timedelta
+import logging
 from pathlib import Path
 from apscheduler.schedulers.background import BackgroundScheduler
 from config.config import Config
@@ -21,7 +22,8 @@ def cleanup_sessions(session_folder: Path, expiration_time: int):
             try:
                 file_path.unlink()
             except Exception as e:
-                print(f"Failed to delete {file_path}. Reason: {e}")
+                logging.error(f"Failed to delete {file_path}. Reason: {e}")
+
 
 scheduler = BackgroundScheduler()
 scheduler.start()

@@ -1,13 +1,12 @@
 import os
 import random
 import base64
-import asyncio
 import traceback
 from flask import request, render_template, abort, jsonify, Blueprint
 from flask_login import current_user
-from concurrent.futures import TimeoutError
 from app.api import Model, ModelError
 from app.data import PROMPTS
+import logging
 
 
 gallery_bp = Blueprint('gallery', __name__, url_prefix='/gallery')
@@ -32,9 +31,9 @@ def gallery():
     return render_template('gallery.html', images=images, user=current_user)
 
 @gallery_bp.route('/model', methods=['POST'])
-async def model():
+def model():
     try:
-        print('[Function: model] Received request')
+        logging.info(f"[Function: model] Received request")
         data = request.form
         model_input = data.get('model_input')
         selected_model = HUGGING_FACE_API_URLS.get(model_input)
@@ -46,25 +45,25 @@ async def model():
         
         if not negative_prompt or negative_prompt.isspace():
             negative_prompt = get_negative_prompt(selected_model, prompt)
-        return await generate_image(selected_model, prompt, negative_prompt)
+        return generate_image(selected_model, prompt, negative_prompt)
 
     except TimeoutError:
-        print('[Function: model] Timeout error occurred')
+        logging.error(f"[Function: model] Timeout error occurred")
         return render_template('error.html', error='Timeout')
 
     except Exception as e:
-        print('[Function: model] Error occurred')
+        logging.error(f"[Function: model] Error occurred: {e}")
         traceback.print_exc()
         return render_template('error.html', error=str(e))
 
-async def generate_image(selected_model, prompt, negative_prompt):
+def generate_image(selected_model, prompt, negative_prompt):
     for attempt in range(3):
         try:
-            print(f'[Function: generate_image] Attempt {attempt + 1}')
-            image = await query_model(selected_model, prompt, negative_prompt)
+            logging.info(f"[Function: generate_image] Attempt {attempt + 1}")
+            image = query_model(selected_model, prompt, negative_prompt)
         except ModelError as e:
             if attempt < 2: # Only allow retries if less than 2 attempts have been made
-                print(f"Attempt {attempt + 1} failed: {e}")
+                logging.info(f"[Function: generate_image] Attempt {attempt + 1} failed: {e}")
                 continue
             else:
                 return render_template('error.html', error=str(e))
@@ -72,11 +71,11 @@ async def generate_image(selected_model, prompt, negative_prompt):
         return render_template('result.html', image=image_data, prompt=prompt, user=current_user)
     return render_template('error.html', error='No image generated after retries')
 
-async def query_model(selected_model, prompt, negative_prompt):
+def query_model(selected_model, prompt, negative_prompt):
     model = Model(selected_model, prompt, negative_prompt, 7, 20, 1024, 1024)
     try:
-        print('[Function: query_model] Generating image')
-        image = await asyncio.wait_for(model.generate(), timeout=120)
+        logging.info(f"[Function: query_model] Querying model")
+        image = model.generate()
     except TimeoutError:
         raise ModelError('Timeout while generating image')
 
@@ -93,7 +92,7 @@ def gallery_image(img_name):
         image_data = f"data:image/png;base64,{image}"
         return render_template("result.html", image=image_data, prompt="Gallery Image", user=current_user)
     except Exception as e:
-        print(f"Error serving image: {e}")
+        logging.error(f"[Function: gallery_image] Error serving image: {e}")
         return render_template("error.html")
 
 @gallery_bp.route('/random-prompt', methods=['GET'])

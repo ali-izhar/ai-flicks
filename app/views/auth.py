@@ -4,6 +4,7 @@ from flask_login import current_user, login_user, logout_user
 from google_auth_oauthlib.flow import Flow
 from app.services import get_user_by_email, create_user
 from app.utils import allowed_file
+import logging
 from utils import resize_avatar, generate_random_password, get_google_profile_pic
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
@@ -59,7 +60,7 @@ def signup():
             try:
                 resized_avatar = resize_avatar(avatar.read())
             except Exception as e:
-                print("Error resizing avatar: ", e)
+                logging.error("Error resizing avatar: ", e)
                 resized_avatar = None
         
         if not avatar or resized_avatar is None:
