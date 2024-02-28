@@ -6,10 +6,12 @@ from flask import request, render_template, abort, jsonify, Blueprint
 from flask_login import current_user
 from app.api import Model, ModelError
 from app.data import PROMPTS
+from openai import OpenAI
 import logging
 
-
 gallery_bp = Blueprint('gallery', __name__, url_prefix='/gallery')
+
+openai_client = OpenAI()
 
 HUGGING_FACE_API_URLS = {
     'stable-diffusion-v15': os.getenv('STABLE_DIFFUSION_V15'),
@@ -32,27 +34,51 @@ def gallery():
 
 @gallery_bp.route('/model', methods=['POST'])
 def model():
+    logging.info("[Function: model] Received request")
+
     try:
-        logging.info(f"[Function: model] Received request")
         data = request.form
+        prompt = data.get('prompt')
+        if not prompt:
+            return abort(400, "Invalid form data supplied")
+    except TimeoutError as te:
+        logging.error(f"[Function: model] Timeout error occurred: {te}")
+        return render_template('error.html', error='Timeout')
+    except Exception as e:
+        logging.error(f"[Function: model] Error occurred: {e}")
+        traceback.print_exc()
+        return render_template('error.html', error=str(e))
+    
+    generate_with_dalle = True
+
+    if generate_with_dalle:
+        image = dalle_model(prompt)
+        return render_template('result.html', image=image, prompt=prompt, user=current_user)
+    else:
         model_input = data.get('model_input')
         selected_model = HUGGING_FACE_API_URLS.get(model_input)
-        prompt = data.get('prompt')
         negative_prompt = data.get('negative_prompt')
 
-        if not selected_model or not prompt:
+        if not selected_model:
             return abort(400, "Invalid form data supplied")
-        
+
         if not negative_prompt or negative_prompt.isspace():
             negative_prompt = get_negative_prompt(selected_model, prompt)
         return generate_image(selected_model, prompt, negative_prompt)
 
-    except TimeoutError:
-        logging.error(f"[Function: model] Timeout error occurred")
-        return render_template('error.html', error='Timeout')
-
+def dalle_model(prompt, model='dall-e-3'):
+    try:
+        response = openai_client.images.generate(
+            model=model,
+            prompt=prompt,
+            size="1024x1024",
+            quality="standard",
+            n=1,
+        )
+        image_url = response.data[0].url
+        return image_url
     except Exception as e:
-        logging.error(f"[Function: model] Error occurred: {e}")
+        logging.error(f"[Function: dalle_model] Error occurred: {e}")
         traceback.print_exc()
         return render_template('error.html', error=str(e))
 

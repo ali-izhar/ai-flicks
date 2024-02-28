@@ -22,5 +22,5 @@ class Config:
     else:
         # Configuration for development
         MONGODB_SETTINGS = {
-            'host': 'localhost',
+            'host': 'mongodb://db:27017/mydatabase',
         }
